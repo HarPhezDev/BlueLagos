@@ -24,6 +24,20 @@ function loadImage(src) {
   })
 }
 
+// Blue Lagos social links — appended to every caption for tagging
+const SOCIALS = [
+  { name: 'YouTube', icon: '▶', url: 'https://www.youtube.com/@BlueLagos-t9p' },
+  { name: 'Instagram', icon: '📷', url: 'https://www.instagram.com/blue.lagos' },
+  { name: 'Facebook', icon: '👍', url: 'https://www.facebook.com/share/1FHYPT1dSt/' },
+  { name: 'X', icon: '𝕏', url: 'https://x.com/BlueLagos1' },
+]
+
+const SOCIAL_BLOCK = `Follow Blue Lagos for updates:
+▶ YouTube: https://www.youtube.com/@BlueLagos-t9p
+📷 Instagram: https://www.instagram.com/blue.lagos
+👍 Facebook: https://www.facebook.com/share/1FHYPT1dSt/
+𝕏 X: https://x.com/BlueLagos1`
+
 // Ready-to-share captions so attendees don't have to write their own
 const CAPTIONS = [
   {
@@ -38,7 +52,9 @@ Theme: Unlocking the Blue Economy — Empowering Youths for Sustainable Riverine
 
 No community is left behind. See you there!
 
-#BlueLagos #BlueEconomy #YouthLeaders #RiverineCommunity #NewGenerationDirectorate`,
+#BlueLagos #BlueEconomy #YouthLeaders #RiverineCommunity #NewGenerationDirectorate
+
+${SOCIAL_BLOCK}`,
   },
   {
     label: 'Short & sweet',
@@ -46,7 +62,9 @@ No community is left behind. See you there!
 
 📅 28th Oct 2026 · 🕒 10am · 📍 Badore Ferry Terminal, Ajah, Lagos
 
-#BlueLagos #BlueEconomy #YouthLeadership`,
+#BlueLagos #BlueEconomy #YouthLeadership
+
+${SOCIAL_BLOCK}`,
   },
   {
     label: 'Hype',
@@ -60,7 +78,9 @@ Join me at the Riverine Community Youth Leaders' Dialogue:
 🕒 10:00am prompt
 📍 Badore Ferry Terminal, Ajah, Lagos State
 
-#BlueLagos #BlueEconomy #SustainableDevelopment #YouthLeaders #Lagos`,
+#BlueLagos #BlueEconomy #SustainableDevelopment #YouthLeaders #Lagos
+
+${SOCIAL_BLOCK}`,
   },
 ]
 
@@ -544,6 +564,33 @@ export default function App() {
                 </p>
               </motion.div>
             ))}
+          </div>
+
+          {/* Clickable follow bar */}
+          <div className="mt-6 flex flex-col items-center gap-3">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-sky-100/45">
+              Follow Blue Lagos
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-2.5">
+              {SOCIALS.map((social, i) => (
+                <motion.a
+                  key={social.name}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: 0.6 + i * 0.06, ease: 'easeOut' }}
+                  whileHover={{ y: -2 }}
+                  whileTap={{ scale: 0.96 }}
+                  aria-label={`Blue Lagos on ${social.name}`}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-3.5 py-2 text-xs font-semibold text-sky-100 ring-1 ring-white/10 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-400/40"
+                >
+                  <span aria-hidden="true" className="text-sm leading-none">{social.icon}</span>
+                  {social.name}
+                </motion.a>
+              ))}
+            </div>
           </div>
         </motion.section>
       </main>
