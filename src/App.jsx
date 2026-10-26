@@ -24,6 +24,46 @@ function loadImage(src) {
   })
 }
 
+// Ready-to-share captions so attendees don't have to write their own
+const CAPTIONS = [
+  {
+    label: 'Official',
+    text: `I'm excited to announce that I'll be attending the Riverine Community Youth Leaders' Dialogue, hosted by Blue Lagos Sustainability Initiative in conjunction with New Generation Directorate.
+
+Theme: Unlocking the Blue Economy — Empowering Youths for Sustainable Riverine/Coastal Development and Inclusive Growth.
+
+📅 Wednesday, 28th October 2026
+🕒 10:00am Prompt
+📍 Badore Ferry Terminal, Ajah, Lagos State
+
+No community is left behind. See you there!
+
+#BlueLagos #BlueEconomy #YouthLeaders #RiverineCommunity #NewGenerationDirectorate`,
+  },
+  {
+    label: 'Short & sweet',
+    text: `Count me in! 🔵🟢 I'll be at the Riverine Community Youth Leaders' Dialogue — Unlocking the Blue Economy and empowering the next generation of coastal leaders.
+
+📅 28th Oct 2026 · 🕒 10am · 📍 Badore Ferry Terminal, Ajah, Lagos
+
+#BlueLagos #BlueEconomy #YouthLeadership`,
+  },
+  {
+    label: 'Hype',
+    text: `🟢🔵 The future of our riverine and coastal communities is youth-powered — and I'm showing up for it!
+
+Join me at the Riverine Community Youth Leaders' Dialogue:
+✨ Unlocking the Blue Economy
+✨ Empowering Youths for Sustainable Development & Inclusive Growth
+
+📅 Wednesday, 28th October 2026
+🕒 10:00am prompt
+📍 Badore Ferry Terminal, Ajah, Lagos State
+
+#BlueLagos #BlueEconomy #SustainableDevelopment #YouthLeaders #Lagos`,
+  },
+]
+
 export default function App() {
   const flyerRef = useRef(null)
   const fileInputRef = useRef(null)
@@ -142,6 +182,39 @@ export default function App() {
     setScale(newScale)
     if (newScale <= MIN_SCALE) setOffset({ x: 0, y: 0 })
   }
+
+  /* ---------- copy a suggested caption ---------- */
+
+  const [copiedIndex, setCopiedIndex] = useState(null)
+
+  const copyCaption = useCallback(
+    async (text, index) => {
+      try {
+        await navigator.clipboard.writeText(text)
+        setCopiedIndex(index)
+        showNotice('Caption copied — paste it when you share! 📋')
+        setTimeout(() => setCopiedIndex((cur) => (cur === index ? null : cur)), 2200)
+      } catch {
+        // Fallback for browsers/environments without the async clipboard API
+        try {
+          const ta = document.createElement('textarea')
+          ta.value = text
+          ta.style.position = 'fixed'
+          ta.style.opacity = '0'
+          document.body.appendChild(ta)
+          ta.select()
+          document.execCommand('copy')
+          document.body.removeChild(ta)
+          setCopiedIndex(index)
+          showNotice('Caption copied — paste it when you share! 📋')
+          setTimeout(() => setCopiedIndex((cur) => (cur === index ? null : cur)), 2200)
+        } catch {
+          showNotice('Could not copy. Please select the text manually.')
+        }
+      }
+    },
+    [showNotice],
+  )
 
   /* ---------- download the flyer with the photo baked in ----------
      Instead of scraping the DOM (flaky with modern CSS), we composite the
@@ -404,6 +477,75 @@ export default function App() {
             )}
           </AnimatePresence>
         </motion.div>
+
+        {/* Suggested captions — tap to copy */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35, ease: 'easeOut' }}
+          className="mt-12 w-full"
+        >
+          <div className="mb-4 flex items-center justify-center gap-2 text-center">
+            <svg viewBox="0 0 24 24" className="h-4 w-4 text-sky-300" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+            </svg>
+            <h2 className="text-base font-bold text-white sm:text-lg">
+              Suggested <span className="text-sky-400">captions</span>
+            </h2>
+          </div>
+          <p className="mx-auto mb-5 max-w-md text-center text-xs text-sky-100/55">
+            Copy one and paste it with your flyer — no need to think of what to write.
+          </p>
+
+          <div className="flex flex-col gap-3">
+            {CAPTIONS.map((caption, index) => (
+              <motion.div
+                key={caption.label}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.4 + index * 0.08, ease: 'easeOut' }}
+                className="group rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 transition-colors hover:bg-white/[0.07] sm:p-5"
+              >
+                <div className="mb-2.5 flex items-center justify-between gap-3">
+                  <span className="rounded-full bg-sky-400/15 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-sky-300 ring-1 ring-sky-400/25">
+                    {caption.label}
+                  </span>
+                  <motion.button
+                    type="button"
+                    whileTap={{ scale: 0.94 }}
+                    onClick={() => copyCaption(caption.text, index)}
+                    className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-400/40 ${
+                      copiedIndex === index
+                        ? 'bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/40'
+                        : 'bg-white/10 text-sky-100 ring-1 ring-white/15 hover:bg-white/20 hover:text-white'
+                    }`}
+                  >
+                    {copiedIndex === index ? (
+                      <>
+                        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Copied!
+                      </>
+                    ) : (
+                      <>
+                        <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                        </svg>
+                        Copy
+                      </>
+                    )}
+                  </motion.button>
+                </div>
+                <p className="whitespace-pre-line text-[13px] leading-relaxed text-sky-50/75">
+                  {caption.text}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
       </main>
     </div>
   )
