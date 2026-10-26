@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { FaXTwitter, FaFacebookF, FaInstagram, FaYoutube } from 'react-icons/fa6'
 import Flyer from './components/Flyer.jsx'
 
 const MIN_SCALE = 1
@@ -26,17 +27,17 @@ function loadImage(src) {
 
 // Blue Lagos social links — appended to every caption for tagging
 const SOCIALS = [
-  { name: 'YouTube', icon: '▶', url: 'https://www.youtube.com/@BlueLagos-t9p' },
-  { name: 'Instagram', icon: '📷', url: 'https://www.instagram.com/blue.lagos' },
-  { name: 'Facebook', icon: '👍', url: 'https://www.facebook.com/share/1FHYPT1dSt/' },
-  { name: 'X', icon: '𝕏', url: 'https://x.com/BlueLagos1' },
+  { name: 'YouTube', icon: FaYoutube, url: 'https://www.youtube.com/@BlueLagos-t9p' },
+  { name: 'Instagram', icon: FaInstagram, url: 'https://www.instagram.com/blue.lagos' },
+  { name: 'Facebook', icon: FaFacebookF, url: 'https://www.facebook.com/share/1FHYPT1dSt/' },
+  { name: 'X', icon: FaXTwitter, url: 'https://x.com/BlueLagos1' },
 ]
 
 const SOCIAL_BLOCK = `Follow Blue Lagos for updates:
-▶ YouTube: https://www.youtube.com/@BlueLagos-t9p
-📷 Instagram: https://www.instagram.com/blue.lagos
-👍 Facebook: https://www.facebook.com/share/1FHYPT1dSt/
-𝕏 X: https://x.com/BlueLagos1`
+YouTube: https://www.youtube.com/@BlueLagos-t9p
+Instagram: https://www.instagram.com/blue.lagos
+Facebook: https://www.facebook.com/share/1FHYPT1dSt/
+X: https://x.com/BlueLagos1`
 
 // Ready-to-share captions so attendees don't have to write their own
 const CAPTIONS = [
@@ -46,9 +47,9 @@ const CAPTIONS = [
 
 Theme: Unlocking the Blue Economy — Empowering Youths for Sustainable Riverine/Coastal Development and Inclusive Growth.
 
-📅 Wednesday, 28th October 2026
-🕒 10:00am Prompt
-📍 Badore Ferry Terminal, Ajah, Lagos State
+Date: Wednesday, 28th October 2026
+Time: 10:00am Prompt
+Venue: Badore Ferry Terminal, Ajah, Lagos State
 
 No community is left behind. See you there!
 
@@ -58,9 +59,9 @@ ${SOCIAL_BLOCK}`,
   },
   {
     label: 'Short & sweet',
-    text: `Count me in! 🔵🟢 I'll be at the Riverine Community Youth Leaders' Dialogue — Unlocking the Blue Economy and empowering the next generation of coastal leaders.
+    text: `Count me in! I'll be at the Riverine Community Youth Leaders' Dialogue — Unlocking the Blue Economy and empowering the next generation of coastal leaders.
 
-📅 28th Oct 2026 · 🕒 10am · 📍 Badore Ferry Terminal, Ajah, Lagos
+Date: 28th Oct 2026 · Time: 10am · Venue: Badore Ferry Terminal, Ajah, Lagos
 
 #BlueLagos #BlueEconomy #YouthLeadership
 
@@ -68,15 +69,15 @@ ${SOCIAL_BLOCK}`,
   },
   {
     label: 'Hype',
-    text: `🟢🔵 The future of our riverine and coastal communities is youth-powered — and I'm showing up for it!
+    text: `The future of our riverine and coastal communities is youth-powered — and I'm showing up for it!
 
 Join me at the Riverine Community Youth Leaders' Dialogue:
-✨ Unlocking the Blue Economy
-✨ Empowering Youths for Sustainable Development & Inclusive Growth
+• Unlocking the Blue Economy
+• Empowering Youths for Sustainable Development & Inclusive Growth
 
-📅 Wednesday, 28th October 2026
-🕒 10:00am prompt
-📍 Badore Ferry Terminal, Ajah, Lagos State
+Date: Wednesday, 28th October 2026
+Time: 10:00am prompt
+Venue: Badore Ferry Terminal, Ajah, Lagos State
 
 #BlueLagos #BlueEconomy #SustainableDevelopment #YouthLeaders #Lagos
 
@@ -212,7 +213,7 @@ export default function App() {
       try {
         await navigator.clipboard.writeText(text)
         setCopiedIndex(index)
-        showNotice('Caption copied — paste it when you share! 📋')
+        showNotice('Caption copied — paste it when you share!')
         setTimeout(() => setCopiedIndex((cur) => (cur === index ? null : cur)), 2200)
       } catch {
         // Fallback for browsers/environments without the async clipboard API
@@ -226,7 +227,7 @@ export default function App() {
           document.execCommand('copy')
           document.body.removeChild(ta)
           setCopiedIndex(index)
-          showNotice('Caption copied — paste it when you share! 📋')
+          showNotice('Caption copied — paste it when you share!')
           setTimeout(() => setCopiedIndex((cur) => (cur === index ? null : cur)), 2200)
         } catch {
           showNotice('Could not copy. Please select the text manually.')
@@ -282,7 +283,7 @@ export default function App() {
       link.download = 'blue-lagos-i-will-be-attending.png'
       link.href = dataUrl
       link.click()
-      showNotice('Flyer downloaded — go share it! 🎉')
+      showNotice('Flyer downloaded — go share it!')
     } catch (err) {
       console.error('Export failed:', err)
       showNotice('Something went wrong while exporting. Please try again.')
@@ -586,7 +587,7 @@ export default function App() {
                   aria-label={`Blue Lagos on ${social.name}`}
                   className="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-3.5 py-2 text-xs font-semibold text-sky-100 ring-1 ring-white/10 transition-colors hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-400/40"
                 >
-                  <span aria-hidden="true" className="text-sm leading-none">{social.icon}</span>
+                  <social.icon aria-hidden="true" className="h-3.5 w-3.5" />
                   {social.name}
                 </motion.a>
               ))}
